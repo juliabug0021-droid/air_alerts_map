@@ -25,12 +25,13 @@ class MyHomePage extends StatelessWidget {
               FeatureCard(
                 title: 'Alerts Map',
                 imagePath: 'assets/images/map.png',
-                onTap: () => context.go('/alerts-map'),
+                onTap: () => context.go('alerts-map'),
               ),
+              const SizedBox(width: 20),
               FeatureCard(
                 title: 'Region Alerts',
-                imagePath: 'assets/images/region.png',
-                onTap: () => context.go('/region-alerts'),
+                imagePath: 'assets/images/city.png',
+                onTap: () => context.go('region-alerts'),
               ),
             ],
           ),

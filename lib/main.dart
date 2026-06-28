@@ -1,4 +1,4 @@
-import 'package:air_alerts_map/features/presentation/ui/my_home_page.dart';
+import 'package:air_alerts_map/router/app_router.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,6 +10,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: const MyHomePage());
+    return MaterialApp.router(routerConfig: appRouter);
   }
 }

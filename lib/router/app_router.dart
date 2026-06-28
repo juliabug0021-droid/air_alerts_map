@@ -1,6 +1,6 @@
-import 'package:air_alerts_map/features/presentation/ui/my_home_page.dart';
-import 'package:air_alerts_map/features/presentation/ui/region_alerts_screen.dart';
-import 'package:air_alerts_map/features/presentation/ui/alerts_map_screen.dart';
+import 'package:air_alerts_map/features/alerts/presentation/ui/my_home_page.dart';
+import 'package:air_alerts_map/features/alerts/presentation/ui/region_alerts_screen.dart';
+import 'package:air_alerts_map/features/alerts/presentation/ui/alerts_map_screen.dart';
 import 'package:air_alerts_map/router/page_names.dart';
 import 'package:go_router/go_router.dart';
 

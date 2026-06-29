@@ -1,7 +1,8 @@
-import 'package:air_alerts_map/features/alerts/data/data_source/alerts_datasource.dart';
-import 'package:air_alerts_map/features/alerts/data/repository/alerts_repository.dart';
 import 'package:air_alerts_map/features/alerts/data/repository/models/active_alerts_entity.dart';
+import 'package:air_alerts_map/features/alerts/presentation/bloc/alerts_cubit.dart';
+import 'package:air_alerts_map/features/alerts/presentation/bloc/alerts_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AlertsMapScreen extends StatefulWidget {
   const AlertsMapScreen({super.key});
@@ -11,37 +12,53 @@ class AlertsMapScreen extends StatefulWidget {
 }
 
 class _AlertsMapScreenState extends State<AlertsMapScreen> {
-  final repository = AlertsRepository(dataSource: AlertsDataSourceImpl());
-  List<ActiveAlertsEntity> alerts = [];
+  late final AlertsCubit _cubit;
   @override
   void initState() {
     super.initState();
 
-    _loadAlerts();
-  }
-
-  Future<void> _loadAlerts() async {
-    alerts = await repository.getActiveAlerts();
-    setState(() {});
+    _cubit = context.read<AlertsCubit>();
+    _cubit.getActiveAlerts();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Alerts Map')),
-      body: alerts.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: alerts.length,
-              itemBuilder: (context, index) {
-                final alert = alerts[index];
-
-                return ListTile(
-                  title: Text(alert.locationOblast),
-                  subtitle: Text(alert.startedAt),
-                );
-              },
+      body: BlocBuilder<AlertsCubit, AlertsState>(
+        builder: (context, state) {
+          return switch (state.status) {
+            AlertsStatus.loading => const Center(
+              child: CircularProgressIndicator(),
             ),
+            AlertsStatus.loaded => MapWidget(alerts: state.alerts),
+            AlertsStatus.error => const Center(
+              child: Text('Error loading alerts'),
+            ),
+          };
+        },
+      ),
+    );
+  }
+}
+
+class MapWidget extends StatelessWidget {
+  const MapWidget({super.key, required this.alerts});
+
+  final List<ActiveAlertsEntity> alerts;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: alerts.length,
+      itemBuilder: (context, index) {
+        final alert = alerts[index];
+
+        return ListTile(
+          title: Text(alert.locationOblast),
+          subtitle: Text(alert.startedAt),
+        );
+      },
     );
   }
 }

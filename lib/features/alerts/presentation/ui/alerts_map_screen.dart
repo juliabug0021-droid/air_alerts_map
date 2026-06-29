@@ -1,4 +1,6 @@
 import 'package:air_alerts_map/features/alerts/data/data_source/alerts_datasource.dart';
+import 'package:air_alerts_map/features/alerts/data/repository/alerts_repository.dart';
+import 'package:air_alerts_map/features/alerts/data/repository/models/active_alerts_entity.dart';
 import 'package:flutter/material.dart';
 
 class AlertsMapScreen extends StatefulWidget {
@@ -9,8 +11,8 @@ class AlertsMapScreen extends StatefulWidget {
 }
 
 class _AlertsMapScreenState extends State<AlertsMapScreen> {
-  final AlertsDataSource _dataSource = AlertsDataSourceImpl();
-
+  final repository = AlertsRepository(dataSource: AlertsDataSourceImpl());
+  List<ActiveAlertsEntity> alerts = [];
   @override
   void initState() {
     super.initState();
@@ -19,16 +21,27 @@ class _AlertsMapScreenState extends State<AlertsMapScreen> {
   }
 
   Future<void> _loadAlerts() async {
-    final alerts = await _dataSource.getActiveAlerts();
-
-    debugPrint(alerts.toString());
+    alerts = await repository.getActiveAlerts();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Alerts Map')),
-      body: const Center(child: Text('Map')),
+      body: alerts.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: alerts.length,
+              itemBuilder: (context, index) {
+                final alert = alerts[index];
+
+                return ListTile(
+                  title: Text(alert.locationOblast),
+                  subtitle: Text(alert.startedAt),
+                );
+              },
+            ),
     );
   }
 }

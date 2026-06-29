@@ -2,17 +2,17 @@ import 'package:air_alerts_map/features/alerts/data/data_source/models/active_al
 
 class ActiveAlertsEntity {
   final int id;
-  final String locationTitle;
-  final String alertType;
+  final String locationOblast;
+  final String startedAt;
 
   ActiveAlertsEntity.fromDto(AlertDto dto)
     : id = dto.id,
-      locationTitle = dto.locationTitle,
-      alertType = dto.alertType;
+      locationOblast = dto.locationOblast,
+      startedAt = dto.startedAt;
 
   ActiveAlertsEntity({
     required this.id,
-    required this.locationTitle,
-    required this.alertType,
+    required this.locationOblast,
+    required this.startedAt,
   });
 }

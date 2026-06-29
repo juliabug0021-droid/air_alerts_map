@@ -8,6 +8,13 @@ class AlertsRepository {
 
   Future<List<ActiveAlertsEntity>> getActiveAlerts() async {
     final dataAlerts = await dataSource.getActiveAlerts();
-    return dataAlerts.alerts.map(ActiveAlertsEntity.fromDto).toList();
+
+    final entities = dataAlerts.alerts.map(ActiveAlertsEntity.fromDto).toList();
+    final uniqueAlerts = <String, ActiveAlertsEntity>{};
+
+    for (final alert in entities) {
+      uniqueAlerts.putIfAbsent(alert.locationOblast, () => alert);
+    }
+    return uniqueAlerts.values.toList();
   }
 }

@@ -9,7 +9,7 @@ class AlertsMapScreen extends StatefulWidget {
 }
 
 class _AlertsMapScreenState extends State<AlertsMapScreen> {
-  final AlertsDataSource _dataSource = AlertsDataSource();
+  final AlertsDataSource _dataSource = AlertsDataSourceImpl();
 
   @override
   void initState() {

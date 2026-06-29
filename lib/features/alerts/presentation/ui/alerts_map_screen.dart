@@ -1,6 +1,7 @@
 import 'package:air_alerts_map/features/alerts/data/repository/models/active_alerts_entity.dart';
 import 'package:air_alerts_map/features/alerts/presentation/bloc/alerts_cubit.dart';
 import 'package:air_alerts_map/features/alerts/presentation/bloc/alerts_state.dart';
+import 'package:air_alerts_map/features/alerts/presentation/utils/oblast_image_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -49,16 +50,36 @@ class MapWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: alerts.length,
-      itemBuilder: (context, index) {
-        final alert = alerts[index];
+    return Column(
+      children: [
+        Stack(
+          children: [
+            Image.asset('assets/images/mapUkraine/Map.png', fit: BoxFit.cover),
+            ...alerts.map((alert) {
+              final overlayPath = OblastImageMapper.getOverlay(
+                alert.locationOblast,
+              );
+              if (overlayPath.isNotEmpty) {
+                return Image.asset(overlayPath, fit: BoxFit.cover);
+              }
+              return const SizedBox.shrink();
+            }),
+          ],
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: alerts.length,
+            itemBuilder: (context, index) {
+              final alert = alerts[index];
 
-        return ListTile(
-          title: Text(alert.locationOblast),
-          subtitle: Text(alert.startedAt),
-        );
-      },
+              return ListTile(
+                title: Text(alert.locationOblast),
+                subtitle: Text(alert.startedAt),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

@@ -27,7 +27,7 @@ class _RegionAlertsScreenState extends State<RegionAlertsScreen> {
     return BlocBuilder<RegionCubit, RegionState>(
       builder: (context, state) {
         return AnimatedContainer(
-          duration: const Duration(microseconds: 100),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
           decoration: BoxDecoration(gradient: _gradient(state)),
           child: Scaffold(

@@ -2,13 +2,20 @@ import 'package:air_alerts_map/features/alerts/data/repository/region_repository
 import 'package:air_alerts_map/features/alerts/presentation/bloc/region_cubit.dart';
 import 'package:air_alerts_map/features/alerts/presentation/bloc/region_state.dart';
 import 'package:air_alerts_map/features/alerts/presentation/ui/region_dropdown.dart';
+import 'package:air_alerts_map/features/alerts/presentation/utils/region_enum.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class RegionAlertsScreen extends StatelessWidget {
+class RegionAlertsScreen extends StatefulWidget {
   const RegionAlertsScreen({super.key});
 
+  @override
+  State<RegionAlertsScreen> createState() => _RegionAlertsScreenState();
+}
+
+class _RegionAlertsScreenState extends State<RegionAlertsScreen> {
+  Region? _selectedRegion;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RegionCubit, RegionState>(
@@ -31,9 +38,13 @@ class RegionAlertsScreen extends StatelessWidget {
                   padding: EdgeInsets.only(right: 16),
                   child: IconButton(
                     icon: const Icon(Icons.refresh),
-                    onPressed: () {
-                      context.read<RegionCubit>().reset();
-                    },
+                    onPressed: _selectedRegion == null
+                        ? null
+                        : () {
+                            context.read<RegionCubit>().getRegionAlerts(
+                              _selectedRegion!.uid,
+                            );
+                          },
                   ),
                 ),
               ],
@@ -62,6 +73,9 @@ class RegionAlertsScreen extends StatelessWidget {
                   child: RegionDropdown(
                     onSelected: (region) {
                       if (region != null) {
+                        setState(() {
+                          _selectedRegion = region;
+                        });
                         context.read<RegionCubit>().getRegionAlerts(region.uid);
                       }
                     },

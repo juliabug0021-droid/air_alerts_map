@@ -14,7 +14,7 @@ class RegionAlertsScreen extends StatelessWidget {
     return BlocBuilder<RegionCubit, RegionState>(
       builder: (context, state) {
         return Container(
-          decoration: BoxDecoration(gradient: _gradient(state.airRaidStatus)),
+          decoration: BoxDecoration(gradient: _gradient(state)),
           child: Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
@@ -26,10 +26,15 @@ class RegionAlertsScreen extends StatelessWidget {
               ),
               leading: BackButton(),
               centerTitle: true,
-              actions: const [
+              actions: [
                 Padding(
                   padding: EdgeInsets.only(right: 16),
-                  child: Icon(Icons.refresh),
+                  child: IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () {
+                      context.read<RegionCubit>().reset();
+                    },
+                  ),
                 ),
               ],
             ),
@@ -70,23 +75,33 @@ class RegionAlertsScreen extends StatelessWidget {
     );
   }
 
-  LinearGradient _gradient(AirRaidStatus? status) {
-    switch (status) {
-      case AirRaidStatus.active:
-        return const LinearGradient(
-          colors: [Color(0xFFA30000), Color(0xFFFF2E2E)],
-        );
-
-      case AirRaidStatus.partial:
-        return const LinearGradient(
-          colors: [Color(0xFF01A558), Color(0xFF7AFC68)],
-        );
-
-      case AirRaidStatus.none:
-      case null:
+  LinearGradient _gradient(RegionState state) {
+    switch (state.status) {
+      case RegionStatus.initial:
+      case RegionStatus.error:
         return const LinearGradient(
           colors: [Color(0xFF7EC8F2), Color(0xFFAADBF7)],
         );
+
+      case RegionStatus.loading:
+      case RegionStatus.loaded:
+        switch (state.airRaidStatus) {
+          case AirRaidStatus.active:
+            return LinearGradient(
+              colors: [Color(0xFFA30000), Color(0xFFFF2E2E)],
+            );
+
+          case AirRaidStatus.partial:
+            return LinearGradient(
+              colors: [Color(0xFF01A558), Color(0xFF7AFC68)],
+            );
+
+          case AirRaidStatus.none:
+          case null:
+            return LinearGradient(
+              colors: [Color(0xFF7EC8F2), Color(0xFFAADBF7)],
+            );
+        }
     }
   }
 }
@@ -97,6 +112,11 @@ class ImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (state.status) {
+      RegionStatus.initial => Center(
+        child: Image.network(
+          'https://res.cloudinary.com/dz8qshbfg/image/upload/f_auto,q_auto/image_city_yicmmx',
+        ),
+      ),
       RegionStatus.loading => const Center(child: CircularProgressIndicator()),
       RegionStatus.loaded => Center(
         child: Image.network(

@@ -10,8 +10,8 @@ class RegionCubit extends Cubit<RegionState> {
   Future<void> getRegionAlerts(int uid) async {
     try {
       emit(state.copyWith(status: RegionStatus.loading));
-      final airRade = await repository.getRegionAlerts(uid);
-      emit(state.copyWith(airRaidStatus: airRade, status: RegionStatus.loaded));
+      final airRaid = await repository.getRegionAlerts(uid);
+      emit(state.copyWith(airRaidStatus: airRaid, status: RegionStatus.loaded));
     } catch (e) {
       emit(state.copyWith(status: RegionStatus.error));
     }

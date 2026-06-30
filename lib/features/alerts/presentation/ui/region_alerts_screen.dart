@@ -1,7 +1,8 @@
 import 'package:air_alerts_map/features/alerts/data/repository/region_repository.dart';
 import 'package:air_alerts_map/features/alerts/presentation/bloc/region_cubit.dart';
 import 'package:air_alerts_map/features/alerts/presentation/bloc/region_state.dart';
-import 'package:air_alerts_map/features/alerts/presentation/utils/region_enum.dart';
+import 'package:air_alerts_map/features/alerts/presentation/ui/region_dropdown.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,9 +46,7 @@ class RegionAlertsScreen extends StatelessWidget {
                       maxWidth: 360,
                       maxHeight: 300,
                     ),
-                    child: Image.network(
-                      'https://res.cloudinary.com/dz8qshbfg/image/upload/f_auto,q_auto/image_city_yicmmx',
-                    ),
+                    child: ImageWidget(state: state),
                   ),
                 ),
                 Padding(
@@ -92,75 +91,19 @@ class RegionAlertsScreen extends StatelessWidget {
   }
 }
 
-class RegionDropdown extends StatelessWidget {
-  const RegionDropdown({super.key, this.onSelected, this.initialSelection});
-
-  final ValueChanged<Region?>? onSelected;
-
-  final Region? initialSelection;
-
-  static const _entryStyle = ButtonStyle(
-    foregroundColor: WidgetStatePropertyAll(Color.fromARGB(221, 5, 4, 4)),
-    padding: WidgetStatePropertyAll(
-      EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-    ),
-  );
-
+class ImageWidget extends StatelessWidget {
+  const ImageWidget({super.key, required this.state});
+  final RegionState state;
   @override
   Widget build(BuildContext context) {
-    final border = OutlineInputBorder(borderRadius: BorderRadius.circular(14));
-
-    return SizedBox(
-      width: double.infinity,
-      child: DropdownMenu<Region>(
-        initialSelection: initialSelection,
-        enableSearch: true,
-        enableFilter: true,
-        requestFocusOnTap: true,
-        hintText: 'Оберіть місто або регіон',
-        leadingIcon: const Icon(Icons.search, color: Color(0xFF8BB8D6)),
-        textStyle: const TextStyle(fontSize: 16, color: Colors.black87),
-        onSelected: onSelected,
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: Colors.white.withValues(alpha: 0.7),
-          border: border,
-          enabledBorder: border.copyWith(
-            borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.8)),
-          ),
-          focusedBorder: border.copyWith(
-            borderSide: const BorderSide(color: Colors.white),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 14,
-          ),
-          hintStyle: TextStyle(
-            color: Colors.black.withValues(alpha: 0.4),
-            fontSize: 16,
-          ),
+    return switch (state.status) {
+      RegionStatus.loading => const Center(child: CircularProgressIndicator()),
+      RegionStatus.loaded => Center(
+        child: Image.network(
+          'https://res.cloudinary.com/dz8qshbfg/image/upload/f_auto,q_auto/image_city_yicmmx',
         ),
-        menuStyle: MenuStyle(
-          backgroundColor: const WidgetStatePropertyAll(Colors.white),
-          surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
-          shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          ),
-          elevation: const WidgetStatePropertyAll(8),
-          padding: const WidgetStatePropertyAll(
-            EdgeInsets.symmetric(vertical: 8),
-          ),
-        ),
-        dropdownMenuEntries: Region.values
-            .map(
-              (region) => DropdownMenuEntry<Region>(
-                value: region,
-                label: region.label,
-                style: _entryStyle,
-              ),
-            )
-            .toList(),
       ),
-    );
+      RegionStatus.error => const Center(child: Text('Error loading alerts')),
+    };
   }
 }

@@ -16,4 +16,8 @@ class RegionCubit extends Cubit<RegionState> {
       emit(state.copyWith(status: RegionStatus.error));
     }
   }
+
+  void reset() {
+    emit(RegionState.initial());
+  }
 }

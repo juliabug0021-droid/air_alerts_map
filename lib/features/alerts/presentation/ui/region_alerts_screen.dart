@@ -17,6 +17,12 @@ class RegionAlertsScreen extends StatefulWidget {
 class _RegionAlertsScreenState extends State<RegionAlertsScreen> {
   Region? _selectedRegion;
   @override
+  void dispose() {
+    context.read<RegionCubit>().reset();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<RegionCubit, RegionState>(
       builder: (context, state) {

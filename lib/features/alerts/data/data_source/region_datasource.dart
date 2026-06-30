@@ -26,11 +26,8 @@ class RegionDataSourceImpl implements RegionDataSource {
     } on DioException catch (e) {
       final serverMessage = e.response?.data?.toString() ?? e.message;
 
-      print('Помилка Dio від сервера (UID: $uid): $serverMessage');
-
       throw Exception('API error from alerts.in.ua: $serverMessage');
     } catch (e) {
-      print('Загальна помилка в DataSource: $e');
       throw Exception('Unexpected error: $e');
     }
   }

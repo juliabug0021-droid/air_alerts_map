@@ -111,19 +111,30 @@ class ImageWidget extends StatelessWidget {
   final RegionState state;
   @override
   Widget build(BuildContext context) {
-    return switch (state.status) {
-      RegionStatus.initial => Center(
+    if (state.status == RegionStatus.loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (state.status == RegionStatus.initial) {
+      return Center(
         child: Image.network(
           'https://res.cloudinary.com/dz8qshbfg/image/upload/f_auto,q_auto/image_city_yicmmx',
         ),
-      ),
-      RegionStatus.loading => const Center(child: CircularProgressIndicator()),
-      RegionStatus.loaded => Center(
-        child: Image.network(
-          'https://res.cloudinary.com/dz8qshbfg/image/upload/f_auto,q_auto/image_city_yicmmx',
-        ),
-      ),
-      RegionStatus.error => const Center(child: Text('Error loading alerts')),
-    };
+      );
+    }
+    if (state.status == RegionStatus.error) {
+      return Center(child: Text('Error loading alerts'));
+    }
+    if (state.status == RegionStatus.loaded) {
+      switch (state.airRaidStatus) {
+        case AirRaidStatus.active:
+        case AirRaidStatus.partial:
+          return Center(child: Image.asset('assets/images/Alarm.png'));
+        case AirRaidStatus.none:
+          return Center(child: Image.asset('assets/images/No alarm.png'));
+        case null:
+          return Center(child: Text('Empty data'));
+      }
+    }
+    return const SizedBox.shrink();
   }
 }

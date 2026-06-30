@@ -24,20 +24,34 @@ class _AlertsMapScreenState extends State<AlertsMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Alerts Map')),
-      body: BlocBuilder<AlertsCubit, AlertsState>(
-        builder: (context, state) {
-          return switch (state.status) {
-            AlertsStatus.loading => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            AlertsStatus.loaded => MapWidget(alerts: state.alerts),
-            AlertsStatus.error => const Center(
-              child: Text('Error loading alerts'),
-            ),
-          };
-        },
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF7EC8F2), Color(0xFFAADBF7)],
+        ),
+      ),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white.withValues(alpha: 0.4),
+          surfaceTintColor: Colors.transparent,
+          title: const Text(
+            'Alerts Map',
+            style: TextStyle(fontWeight: FontWeight.w500),
+          ),
+        ),
+        body: BlocBuilder<AlertsCubit, AlertsState>(
+          builder: (context, state) {
+            return switch (state.status) {
+              AlertsStatus.loading => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              AlertsStatus.loaded => MapWidget(alerts: state.alerts),
+              AlertsStatus.error => const Center(
+                child: Text('Error loading alerts'),
+              ),
+            };
+          },
+        ),
       ),
     );
   }
@@ -68,13 +82,38 @@ class MapWidget extends StatelessWidget {
         ),
         Expanded(
           child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             itemCount: alerts.length,
             itemBuilder: (context, index) {
               final alert = alerts[index];
 
-              return ListTile(
-                title: Text(alert.locationOblast),
-                subtitle: Text(alert.startedAt),
+              return Card(
+                elevation: 2,
+                color: const Color.fromARGB(255, 180, 224, 255),
+                margin: const EdgeInsets.only(bottom: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ListTile(
+                  leading: Image.asset('assets/images/danger.png', width: 24),
+
+                  title: Text(
+                    alert.locationOblast,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12,
+                    ),
+                  ),
+                  subtitle: Text(
+                    alert.startedAt,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
               );
             },
           ),

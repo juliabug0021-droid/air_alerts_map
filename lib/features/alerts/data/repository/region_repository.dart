@@ -7,8 +7,10 @@ class RegionRepository {
   final RegionDataSource dataSource;
 
   Future<AirRaidStatus> getRegionAlerts(int uid) async {
-    final status = await dataSource.getRegionAlerts(uid);
-    switch (status) {
+    final rawData = await dataSource.getRegionAlerts(uid);
+
+    final cleanStatus = rawData.trim().replaceAll('"', '').toUpperCase();
+    switch (cleanStatus) {
       case 'A':
         return AirRaidStatus.active;
       case 'P':
@@ -16,7 +18,7 @@ class RegionRepository {
       case 'N':
         return AirRaidStatus.none;
       default:
-        throw Exception('Unknown status: $status');
+        throw Exception('Unknown status: $cleanStatus');
     }
   }
 }

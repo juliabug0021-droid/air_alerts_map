@@ -87,16 +87,16 @@ class RegionAlertsScreen extends StatelessWidget {
       case RegionStatus.loaded:
         switch (state.airRaidStatus) {
           case AirRaidStatus.active:
+          case AirRaidStatus.partial:
             return LinearGradient(
               colors: [Color(0xFFA30000), Color(0xFFFF2E2E)],
             );
 
-          case AirRaidStatus.partial:
+          case AirRaidStatus.none:
             return LinearGradient(
               colors: [Color(0xFF01A558), Color(0xFF7AFC68)],
             );
 
-          case AirRaidStatus.none:
           case null:
             return LinearGradient(
               colors: [Color(0xFF7EC8F2), Color(0xFFAADBF7)],

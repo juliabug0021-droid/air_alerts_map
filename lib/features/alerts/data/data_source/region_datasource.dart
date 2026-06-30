@@ -10,17 +10,28 @@ class RegionDataSourceImpl implements RegionDataSource {
 
   @override
   Future<String> getRegionAlerts(int uid) async {
-    final response = await _dio.get<String>(
-      '/v1/iot/active_air_raid_alerts/$uid.json',
-      queryParameters: {'token': _apiToken},
-    );
-    final data = response.data;
-
-    if (data == null) {
-      throw Exception(
-        'API error. Please contact api@alerts.in.ua for details.',
+    try {
+      final response = await _dio.get<String>(
+        '/v1/iot/active_air_raid_alerts/$uid.json',
+        queryParameters: {'token': _apiToken},
       );
+
+      final data = response.data;
+
+      if (data == null || data.isEmpty) {
+        throw Exception('API returned an empty response body.');
+      }
+
+      return data;
+    } on DioException catch (e) {
+      final serverMessage = e.response?.data?.toString() ?? e.message;
+
+      print('Помилка Dio від сервера (UID: $uid): $serverMessage');
+
+      throw Exception('API error from alerts.in.ua: $serverMessage');
+    } catch (e) {
+      print('Загальна помилка в DataSource: $e');
+      throw Exception('Unexpected error: $e');
     }
-    return data;
   }
 }

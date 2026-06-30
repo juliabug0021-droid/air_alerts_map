@@ -31,6 +31,7 @@ class _AlertsMapScreenState extends State<AlertsMapScreen> {
         ),
       ),
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: Colors.white.withValues(alpha: 0.4),
           surfaceTintColor: Colors.transparent,
